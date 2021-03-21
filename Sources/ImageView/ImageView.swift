@@ -2,13 +2,14 @@ import UIKit
 
 open class ImageView: UIImageView {
     
-    static var imageCacheType: ImageCacheType = .session
-
     // MARK: - Placeholder
     public struct Placeholder {
+        
         private var _image: UIImage?
-        var color: UIColor?
-        var image: UIImage? {
+        
+        public var color: UIColor?
+        
+        public var image: UIImage? {
             set {
                 _image = newValue
             }
@@ -20,7 +21,14 @@ open class ImageView: UIImageView {
                 }
             }
         }
+        
+        public init(image: UIImage? = nil, color: UIColor? = nil) {
+            self.image = image
+            self.color = color
+        }
     }
+    
+    static var imageCacheType: ImageCacheType = .session
 
     // MARK: - properties
     private var tapAction: Action?
