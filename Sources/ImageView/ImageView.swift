@@ -33,7 +33,13 @@ open class ImageView: UIImageView {
     // MARK: - properties
     private var tapAction: Action?
     
-    public var placeholder: Placeholder
+    public var placeholder: Placeholder {
+        didSet {
+            if image == nil {
+                image = placeholder.image
+            }
+        }
+    }
     
     private var imageLoader: ImageLoaderProtocol
 
