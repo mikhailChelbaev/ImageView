@@ -61,9 +61,9 @@ open class ImageView: UIImageView {
 
     // MARK: - load image
     public func loadImage(_ link: String?, completion: ((Bool) -> ())? = nil) {
+        image = placeholder.image
         imageLoader.loadImage(link) { [weak self] (img) in
             guard let `self` = self else { return }
-            self.image = self.placeholder.image
             if let img = img {
                 self.image = img
                 completion?(true)
