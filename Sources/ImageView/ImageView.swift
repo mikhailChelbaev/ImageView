@@ -31,7 +31,11 @@ open class ImageView: UIImageView {
     static var imageCacheType: ImageCacheType = .session
 
     // MARK: - properties
-    private var tapAction: Action?
+    private var tapAction: Action? {
+        didSet {
+            tapGesture.isEnabled = tapAction != nil
+        }
+    }
     
     public var placeholder: Placeholder {
         didSet {
@@ -41,13 +45,22 @@ open class ImageView: UIImageView {
         }
     }
     
+    public private(set) var isImageLoaded: Bool = false
+    
     private var imageLoader: ImageLoaderProtocol
+    
+    private var tapGesture: UITapGestureRecognizer
 
     // MARK: - init
     override public init(frame: CGRect) {
         self.imageLoader = ImageLoader(imageSaver: ImageView.imageCacheType.getImageSaver())
         self.placeholder = Placeholder()
+        self.tapGesture = UITapGestureRecognizer()
         super.init(frame: frame)
+        
+        tapGesture.addTarget(self, action: #selector(handleTap))
+        self.addGestureRecognizer(tapGesture)
+        tapGesture.isEnabled = false
     }
     
     public convenience init(imageSaver: ImageSaverProtocol) {
@@ -58,6 +71,14 @@ open class ImageView: UIImageView {
     required public init?(coder: NSCoder) {
         fatalError()
     }
+    
+    // MARK: - life cycle
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if !isImageLoaded, let placeholderImage = placeholder.image {
+            self.image = placeholderImage
+        }
+    }
 
     // MARK: - load image
     public func loadImage(_ link: String?, completion: ((Bool) -> ())? = nil) {
@@ -66,8 +87,10 @@ open class ImageView: UIImageView {
             guard let `self` = self else { return }
             if let img = img {
                 self.image = img
+                self.isImageLoaded = true
                 completion?(true)
             } else {
+                self.isImageLoaded = false
                 completion?(false)
             }
         }
@@ -79,7 +102,7 @@ open class ImageView: UIImageView {
         self.tapAction = action
     }
 
-    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    @objc private func handleTap() {
         tapAction?()
     }
 
