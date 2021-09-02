@@ -11,7 +11,7 @@ public protocol ImageLoaderProtocol {
 }
 
 public class ImageLoader: ImageLoaderProtocol {
-    private var imageSaver: ImageSaverProtocol
+    public var imageSaver: ImageSaverProtocol
     
     private var lastURLUsedToLoadImage: String?
     

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "ImageView",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v11),
         .macOS(.v11)
     ],
     products: [

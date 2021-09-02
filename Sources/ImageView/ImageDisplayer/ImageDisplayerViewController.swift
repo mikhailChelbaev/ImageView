@@ -1,5 +1,6 @@
 import UIKit
 
+@available(iOS 13, *)
 public class ImageDisplayerViewController: UIPageViewController, ImageViewerTransitionViewControllerConvertible {
     
     public enum DismissStyle {
@@ -119,6 +120,7 @@ public class ImageDisplayerViewController: UIPageViewController, ImageViewerTran
     }
 }
 
+@available(iOS 13, *)
 extension ImageDisplayerViewController: UIPageViewControllerDataSource {
     public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         

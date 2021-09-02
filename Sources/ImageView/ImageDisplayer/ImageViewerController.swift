@@ -1,5 +1,6 @@
 import UIKit
 
+@available(iOS 13, *)
 class ImageViewerController: UIViewController {
     
     class ImageDisplayerImageView: ImageView {
@@ -188,6 +189,7 @@ class ImageViewerController: UIViewController {
     
 }
 
+@available(iOS 13, *)
 extension ImageViewerController: UIGestureRecognizerDelegate {
     
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -203,6 +205,7 @@ extension ImageViewerController: UIGestureRecognizerDelegate {
 }
 
 // MARK: Adjusting the dimensions
+@available(iOS 13, *)
 extension ImageViewerController {
     
     private func updateMinMaxZoomScaleForSize(_ size: CGSize) {
@@ -246,6 +249,7 @@ extension ImageViewerController {
 }
 
 // MARK: Animation Related stuff
+@available(iOS 13, *)
 extension ImageViewerController {
     
     private func executeCancelAnimation() {
@@ -262,6 +266,7 @@ extension ImageViewerController {
     
 }
 
+@available(iOS 13, *)
 extension ImageViewerController: UIScrollViewDelegate {
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

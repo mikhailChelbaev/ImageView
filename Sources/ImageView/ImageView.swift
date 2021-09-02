@@ -1,30 +1,39 @@
 import UIKit
 
+// MARK: - ImageCreation
+public typealias ImageCreation = () -> UIImage?
+public typealias ResultCompletion = (Bool) -> Void
+
+
+// MARK: - ImageView
 open class ImageView: UIImageView {
     
     // MARK: - Placeholder
-    public struct Placeholder {
+    public enum Placeholder {
         
-        private var _image: UIImage?
-        
-        public var color: UIColor?
-        
+        @available(iOS 13.0, *) case symbol(name: String, tintColor: UIColor? = nil)
+        case image(UIImage)
+        case `func`(ImageCreation)
+        case none
+
         public var image: UIImage? {
-            set {
-                _image = newValue
-            }
-            get {
-                if let color = color {
-                    return _image?.withTintColor(color, renderingMode: .alwaysOriginal)
-                } else {
-                    return _image
+            switch self {
+            case .symbol(let name, let tintColor):
+                if #available(iOS 13.0, *) {
+                    let image = UIImage(systemName: name)
+                    if let tintColor = tintColor {
+                        return image?.withTintColor(tintColor).withTintColor(tintColor, renderingMode: .alwaysOriginal)
+                    }
+                    return image
                 }
+                return nil
+            case .image(let img):
+                return img
+            case .func(let creation):
+                return creation()
+            case .none:
+                return nil
             }
-        }
-        
-        public init(image: UIImage? = nil, color: UIColor? = nil) {
-            self.image = image
-            self.color = color
         }
     }
     
@@ -54,12 +63,13 @@ open class ImageView: UIImageView {
     // MARK: - init
     override public init(frame: CGRect) {
         self.imageLoader = ImageLoader(imageSaver: ImageView.imageCacheType.getImageSaver())
-        self.placeholder = Placeholder()
+        self.placeholder = .none
         self.tapGesture = UITapGestureRecognizer()
+        
         super.init(frame: frame)
         
-        tapGesture.addTarget(self, action: #selector(handleTap))
         self.addGestureRecognizer(tapGesture)
+        tapGesture.addTarget(self, action: #selector(handleTap))
         tapGesture.isEnabled = false
     }
     
@@ -81,7 +91,7 @@ open class ImageView: UIImageView {
     }
 
     // MARK: - load image
-    public func loadImage(_ link: String?, completion: ((Bool) -> ())? = nil) {
+    public func loadImage(_ link: String?, completion: ResultCompletion? = nil) {
         image = placeholder.image
         imageLoader.loadImage(link) { [weak self] (img) in
             guard let `self` = self else { return }
