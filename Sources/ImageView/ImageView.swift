@@ -77,6 +77,10 @@ open class ImageView: UIImageView {
         self.init(frame: .zero)
         self.imageLoader = ImageLoader(imageSaver: imageSaver)
     }
+    
+    public convenience init() {
+        self.init(frame: .zero)
+    }
 
     required public init?(coder: NSCoder) {
         fatalError()
