@@ -11,7 +11,7 @@ open class ImageView: UIImageView {
     // MARK: - Placeholder
     public enum Placeholder {
         
-        @available(iOS 13.0, *) case symbol(name: String, tintColor: UIColor? = nil)
+        case symbol(name: String, tintColor: UIColor? = nil)
         case image(UIImage)
         case `func`(ImageCreation)
         case none
@@ -25,8 +25,10 @@ open class ImageView: UIImageView {
                         return image?.withTintColor(tintColor).withTintColor(tintColor, renderingMode: .alwaysOriginal)
                     }
                     return image
+                } else {
+                    assertionFailure("SF Symbols are available from iOS 13")
+                    return nil
                 }
-                return nil
             case .image(let img):
                 return img
             case .func(let creation):
@@ -35,6 +37,7 @@ open class ImageView: UIImageView {
                 return nil
             }
         }
+        
     }
     
     static var imageCacheType: ImageCacheType = .session
