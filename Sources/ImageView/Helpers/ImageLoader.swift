@@ -34,21 +34,20 @@ public class ImageLoader: ImageLoaderProtocol {
         
         DispatchQueue.global().async { [weak self] in
             guard let `self` = self else { return }
-            if self.lastURLUsedToLoadImage == link {
-                if let url = URL(string: link) {
-                    URLSession.shared.dataTask(with: url) { (data, _, _) in
-                        if let data = data, let img = UIImage(data: data) {
-                            DispatchQueue.main.async {
-                                self.imageSaver.saveImage(image: img, name: name)
-                                completion(img)
-                            }
-                        } else {
-                            DispatchQueue.main.async {
-                                completion(nil)
-                            }
+            if let url = URL(string: link) {
+                URLSession.shared.dataTask(with: url) { (data, _, _) in
+                    guard self.lastURLUsedToLoadImage == link else { return }
+                    if let data = data, let img = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            self.imageSaver.saveImage(image: img, name: name)
+                            completion(img)
                         }
-                    }.resume()
-                }
+                    } else {
+                        DispatchQueue.main.async {
+                            completion(nil)
+                        }
+                    }
+                }.resume()
             }
         }
     }
